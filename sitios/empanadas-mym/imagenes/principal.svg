@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <rect width="1200" height="675" fill="#3a1a0a"/>
+  <rect width="1200" height="675" fill="url(#grad)"/>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#b5401f;stop-opacity:0.9"/>
+      <stop offset="100%" style="stop-color:#3a1a0a;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+  <!-- Empanada grande decorativa -->
+  <ellipse cx="900" cy="400" rx="280" ry="180" fill="#d9962b" opacity="0.3"/>
+  <path d="M620 400 Q900 100 1180 400 Z" fill="#b5401f" opacity="0.25"/>
+  <!-- Texto -->
+  <text x="100" y="280" font-family="Outfit,sans-serif" font-size="28" fill="#d9962b" font-weight="600" letter-spacing="4">EMPANADAS MyM</text>
+  <text x="100" y="370" font-family="Outfit,sans-serif" font-size="72" fill="#fff6e8" font-weight="700">Sabor casero</text>
+  <text x="100" y="460" font-family="Outfit,sans-serif" font-size="72" fill="#fff6e8" font-weight="700">en cada empanada</text>
+  <text x="104" y="540" font-family="Outfit,sans-serif" font-size="22" fill="#d9962b" opacity="0.9">[ IMAGEN PROVISIONAL — reemplazar con foto real ]</text>
+</svg>

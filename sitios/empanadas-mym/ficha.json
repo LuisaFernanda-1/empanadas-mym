@@ -1,0 +1,92 @@
+{
+  "slug": "empanadas-mym",
+  "nombre": "Empanadas MyM",
+  "dominios": ["empanadasmym.com"],
+  "logo": "logo.svg",
+  "mostrar_nombre_junto_al_logo": true,
+
+  "colores": {
+    "principal":  "#b5401f",
+    "secundario": "#d9962b",
+    "fondo_suave": "#fff6e8"
+  },
+  "fuentes": { "titulos": "Outfit", "marca": "Lora" },
+
+  "inicio": {
+    "antetitulo": "Empanadas MyM",
+    "titulo": "Sabor casero en cada empanada",
+    "descripcion": "Empanadas artesanales con sazón único y rigurosos estándares de higiene. Ofrecemos una experiencia de compra fácil, rápida y cercana, ideal para disfrutar en el hogar, reuniones o fechas especiales.",
+    "imagen_principal": "principal.jpg",
+    "beneficios": [
+      { "icono": "heart",  "titulo": "Receta artesanal",   "subtitulo": "Sazón de tradición familiar" },
+      { "icono": "shield", "titulo": "Higiene rigurosa",   "subtitulo": "Ingredientes frescos" },
+      { "icono": "truck",  "titulo": "Servicio a domicilio", "subtitulo": "Rápido y cercano" }
+    ]
+  },
+
+  "quienes_somos": {
+    "titulo": "Una tradición familiar hecha empanada",
+    "texto": "Empanadas MyM nació en el hogar transformando una tradición familiar en un próspero emprendimiento. Su auténtico sabor casero, frescura e imbatible relación calidad-precio impulsaron rápidamente una alta demanda local, evolucionando de una producción artesanal entre vecinos a un negocio formal con servicio a domicilio.\n\nHoy, la marca continúa fortaleciéndose para consolidarse en la gastronomía local, ofreciendo rapidez y comodidad sin perder la esencia artesanal que la vio nacer.",
+    "imagen": "quienes-somos.jpg",
+    "mision": "En Empanadas MyM trabajamos para ofrecer productos alimenticios de alta calidad, elaborados de manera artesanal con ingredientes frescos y seleccionados, garantizando sabor, higiene y satisfacción en cada pedido. Buscamos brindar un servicio ágil, confiable y cercano, adaptado a las necesidades de nuestros clientes.",
+    "vision": "A mediano plazo, Empanadas MyM aspira a posicionarse como uno de los emprendimientos de comida rápida artesanal más reconocidos en la zona, destacándose por su sabor, calidad y excelente atención. A largo plazo, se proyecta ampliar su portafolio de productos, aumentar su cobertura de domicilios y generar oportunidades de empleo dentro de la comunidad."
+  },
+
+  "etiqueta_productos": "Productos",
+  "productos": [
+    {
+      "nombre": "Empanada Valluna",
+      "precio": 2000,
+      "descripcion": "Empanada artesanal de masa de harina pan, rellena con la mezcla tradicional de carne y/o pollo, papa y condimentos caseros, frita hasta dorar. Elaboración 100% casera con ingredientes frescos.",
+      "imagen": "producto-empanada-valluna.jpg"
+    },
+    {
+      "nombre": "Empanada Mixta",
+      "precio": 2500,
+      "descripcion": "Empanada rellena con una combinación de carne y pollo, ideal para quienes desean disfrutar de los dos sabores en una sola empanada.",
+      "imagen": "producto-empanada-mixta.jpg"
+    },
+    {
+      "nombre": "Empanada de Arroz con Carne",
+      "precio": 2500,
+      "descripcion": "Empanada rellena de arroz y carne desmechada o molida, sazonada con receta casera; una opción diferente dentro del portafolio tradicional.",
+      "imagen": "producto-empanada-arroz.jpg"
+    },
+    {
+      "nombre": "Empanada de Pollo",
+      "precio": 2500,
+      "descripcion": "Empanada rellena de pollo desmechado y condimentado, de sabor suave; una de las más solicitadas por los clientes.",
+      "imagen": "producto-empanada-pollo.jpg"
+    }
+  ],
+
+  "galeria": [
+    { "imagen": "galeria-bandeja.jpg",  "descripcion": "Bandejas para fechas especiales" },
+    { "imagen": "galeria-vallunas.jpg", "descripcion": "Vallunas recién fritas" },
+    { "imagen": "galeria-mixta.jpg",    "descripcion": "Empanada mixta, hecha en casa" }
+  ],
+
+  "contacto": {
+    "whatsapp": "573223741948",
+    "mensaje_whatsapp": "¡Hola Empanadas MyM! Quiero hacer un pedido.",
+    "correo": "empanadasmym34@gmail.com",
+    "telefono": "+57 322 374 1948",
+    "direccion": "",
+    "ciudad": "Salazar de las Palmas, Norte de Santander",
+    "horario": "",
+    "mapa_url": ""
+  },
+
+  "redes": [
+    { "red": "instagram", "url": "https://www.instagram.com/empanadasmym2024" },
+    { "red": "facebook",  "url": "https://www.facebook.com/profile.php?id=61594516910746" }
+  ],
+
+  "administrador": {
+    "correo": "empanadasmym34@gmail.com",
+    "usuario": "empanadasmym",
+    "contrasena_inicial": ""
+  },
+
+  "seo_descripcion": "Elaboración y comercialización de empanadas artesanales y desayunos sorpresa en Salazar de las Palmas, Norte de Santander."
+}

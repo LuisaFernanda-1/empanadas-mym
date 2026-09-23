@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <rect width="800" height="600" fill="#b5401f"/>
+  <!-- Caja de regalo estilizada -->
+  <rect x="240" y="220" width="320" height="240" rx="12" fill="#d9962b"/>
+  <rect x="240" y="220" width="320" height="50" rx="12" fill="#fff6e8" opacity="0.3"/>
+  <line x1="400" y1="220" x2="400" y2="460" stroke="#fff6e8" stroke-width="6" opacity="0.4"/>
+  <path d="M340 220 Q370 190 400 210 Q430 190 460 220" fill="none" stroke="#fff6e8" stroke-width="6" opacity="0.5"/>
+  <text x="400" y="160" font-family="Outfit,sans-serif" font-size="28" fill="#fff6e8" font-weight="700" text-anchor="middle">Desayuno sorpresa</text>
+  <text x="400" y="520" font-family="Outfit,sans-serif" font-size="14" fill="#fff6e8" opacity="0.5" text-anchor="middle">[ PROVISIONAL — confirmar con emprendedor ]</text>
+</svg>

@@ -1,0 +1,17 @@
+# ---- Datos privados: NUNCA subir ----
+# Contraseña de Gmail y datos de la base
+server/core/config.php
+# Usuario y clave del panel
+CREDENCIALES-LOCAL.txt
+# Datos reales (administrador, productos)
+database/respaldo.sql
+# Notas internas
+sitios/*/_notas.md
+server/mail.log
+
+# ---- Archivos de trabajo ----
+# Originales; las usadas están en sitios/empanadas-mym/imagenes
+FOTOS-RECIBIDAS/
+frontend/node_modules/
+.claude/
+*.tmp

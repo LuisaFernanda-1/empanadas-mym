@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <rect width="800" height="600" fill="#fff6e8"/>
+  <ellipse cx="280" cy="340" rx="160" ry="105" fill="#d9962b" opacity="0.55"/>
+  <path d="M120 340 Q280 130 440 340 Z" fill="#b5401f" opacity="0.45"/>
+  <ellipse cx="530" cy="340" rx="160" ry="105" fill="#b5401f" opacity="0.45"/>
+  <path d="M370 340 Q530 130 690 340 Z" fill="#d9962b" opacity="0.4"/>
+  <text x="400" y="140" font-family="Outfit,sans-serif" font-size="28" fill="#b5401f" font-weight="700" text-anchor="middle">Empanada mixta</text>
+  <text x="400" y="520" font-family="Outfit,sans-serif" font-size="14" fill="#b5401f" opacity="0.5" text-anchor="middle">[ PROVISIONAL ]</text>
+</svg>

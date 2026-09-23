@@ -1,0 +1,65 @@
+{
+  "slug": "nombre-del-negocio",
+  "nombre": "Nombre del Negocio",
+  "dominios": ["dominio-opcion-1.com", "dominio-opcion-2.com"],
+  "logo": "logo.png",
+  "mostrar_nombre_junto_al_logo": true,
+
+  "colores": { "principal": "#1f6b3a", "secundario": "#6b3f24", "fondo_suave": "#f6f1e9" },
+  "fuentes": { "titulos": "Outfit", "marca": "Lora" },
+
+  "inicio": {
+    "antetitulo": "Nombre del Negocio",
+    "titulo": "Frase principal corta (máx. 8 palabras)",
+    "descripcion": "Descripción breve del emprendimiento en una o dos líneas.",
+    "imagen_principal": "principal.jpg",
+    "beneficios": [
+      { "icono": "star", "titulo": "Beneficio 1", "subtitulo": "Detalle corto" },
+      { "icono": "truck", "titulo": "Beneficio 2", "subtitulo": "Detalle corto" },
+      { "icono": "heart", "titulo": "Beneficio 3", "subtitulo": "Detalle corto" }
+    ]
+  },
+
+  "quienes_somos": {
+    "titulo": "Título de la sección",
+    "texto": "Primer párrafo de la historia.\n\nSegundo párrafo (separar párrafos con una línea en blanco).",
+    "imagen": "quienes-somos.jpg",
+    "mision": "",
+    "vision": ""
+  },
+
+  "etiqueta_productos": "Productos",
+  "productos": [
+    { "nombre": "Producto 1", "precio": 10000, "descripcion": "Descripción corta (máx. 300 caracteres).", "imagen": "producto-1.jpg" },
+    { "nombre": "Servicio sin precio fijo", "precio": null, "descripcion": "Se mostrará 'Consultar precio'.", "imagen": "producto-2.jpg" }
+  ],
+
+  "galeria": [
+    { "imagen": "galeria-1.jpg", "descripcion": "" },
+    { "imagen": "galeria-2.jpg", "descripcion": "" },
+    { "imagen": "galeria-3.jpg", "descripcion": "" }
+  ],
+
+  "contacto": {
+    "whatsapp": "573000000000",
+    "mensaje_whatsapp": "¡Hola! Quiero más información.",
+    "correo": "correo@negocio.com",
+    "telefono": "",
+    "direccion": "",
+    "ciudad": "",
+    "horario": "",
+    "mapa_url": ""
+  },
+
+  "redes": [
+    { "red": "instagram", "url": "https://instagram.com/usuario" }
+  ],
+
+  "administrador": {
+    "correo": "correo@negocio.com",
+    "usuario": "usuario",
+    "contrasena_inicial": ""
+  },
+
+  "seo_descripcion": "Frase de hasta 160 caracteres que aparecerá en Google."
+}

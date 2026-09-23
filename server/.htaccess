@@ -1,0 +1,47 @@
+# =====================================================================
+#  public_html/.htaccess — compatible con Apache y LiteSpeed (Hostinger)
+# =====================================================================
+Options -Indexes
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Forzar HTTPS (activa el SSL gratuito de cada dominio en hPanel primero)
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Carpetas internas: nunca accesibles desde el navegador
+  RewriteRule ^(core|tools)(/|$) - [F,L]
+
+  # API
+  RewriteRule ^api(/.*)?$ api/index.php [L,QSA]
+
+  # Archivos reales (assets, uploads, robots.txt...)
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [L]
+
+  # Todo lo demás lo resuelve Vue Router a través de index.php
+  RewriteRule ^ index.php [L,QSA]
+</IfModule>
+
+# Caché larga para archivos con hash de Vite e imágenes
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>

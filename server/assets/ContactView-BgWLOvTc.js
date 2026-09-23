@@ -1,0 +1,1 @@
+import{i as e,l as t,u as n}from"./Icon-BHJAKu0E.js";import{i as r}from"./index-5KWbC60D.js";import{t as i}from"./PageBanner-Dj2xkQv2.js";var a=n({name:`ContactView`,setup(){return()=>t(e,null,[t(i,{title:`Contacto`,subtitle:`Estamos a un mensaje de distancia.`},null),t(`section`,{class:`section`},[t(`div`,{class:`container`},[t(r,null,null)])])])}});export{a as default};
