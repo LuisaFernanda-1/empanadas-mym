@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="900" height="600">
-  <rect width="900" height="600" fill="#fff6e8"/>
-  <rect x="0" y="0" width="900" height="300" fill="#d9962b" opacity="0.18"/>
-  <circle cx="250" cy="220" r="100" fill="#d9962b" opacity="0.4"/>
-  <circle cx="500" cy="180" r="70" fill="#b5401f" opacity="0.3"/>
-  <circle cx="700" cy="240" r="90" fill="#d9962b" opacity="0.3"/>
-  <text x="450" y="420" font-family="Outfit,sans-serif" font-size="26" fill="#b5401f" font-weight="700" text-anchor="middle">Ingredientes frescos del día</text>
-  <text x="450" y="570" font-family="Outfit,sans-serif" font-size="15" fill="#b5401f" opacity="0.5" text-anchor="middle">[ PROVISIONAL ]</text>
-</svg>

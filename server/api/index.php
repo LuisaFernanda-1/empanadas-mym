@@ -126,28 +126,53 @@ if ($method === 'POST' && $path === '/auth/forgot') {
         [$siteId, $email]
     );
 
+    // Limpieza: enlaces vencidos o ya usados de este sitio
+    Database::run(
+        'DELETE FROM password_resets WHERE site_id = ? AND (used_at IS NOT NULL OR created_at < (NOW() - INTERVAL 1 HOUR))',
+        [$siteId]
+    );
+
+    // Un enlace nuevo como máximo cada 2 minutos (evita llenar de correos al emprendedor)
+    $recent = $admin === null ? null : Database::one(
+        'SELECT id FROM password_resets WHERE site_id = ? AND email = ? AND created_at > (NOW() - INTERVAL 2 MINUTE)',
+        [$siteId, $email]
+    );
+
     // Respuesta genérica para no revelar si el correo existe
-    if ($admin !== null) {
-        Database::run(
-            'DELETE FROM password_resets WHERE site_id = ? AND email = ?',
-            [$siteId, $email]
-        );
+    if ($admin !== null && $recent === null) {
+        Database::run('DELETE FROM password_resets WHERE site_id = ? AND email = ?', [$siteId, $email]);
         $token = bin2hex(random_bytes(32));
         Database::run(
             'INSERT INTO password_resets (site_id, token, email, created_at) VALUES (?, ?, ?, NOW())',
             [$siteId, $token, $email]
         );
 
-        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-        $base   = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
-        $link   = "{$base}/admin/nueva-contrasena?token={$token}";
+        // En el hosting el enlace usa el dominio principal registrado del sitio (no la cabecera Host);
+        // en local, el mismo host/puerto con el que se abrió el panel.
+        $https  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+        $domain = config('dev_mode') ? null : Database::one(
+            'SELECT domain FROM site_domains WHERE site_id = ? ORDER BY is_primary DESC, id LIMIT 1',
+            [$siteId]
+        )['domain'] ?? null;
+        $base = $domain ? "https://{$domain}" : ($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+        $link = "{$base}/admin/nueva-contrasena?token={$token}";
 
         $site = Tenant::require();
         $subject = "Recupera tu contraseña — {$site['name']}";
-        $body    = "Hola,\n\nRecibimos una solicitud para restablecer la contraseña de tu panel.\n"
-                 . "Haz clic en el siguiente enlace (válido por 1 hora):\n\n{$link}\n\n"
-                 . "Si no solicitaste esto, ignora este correo.\n\n— {$site['name']}";
-        Mailer::send($email, $subject, $body);
+        $body    = "Hola,\n\nRecibimos una solicitud para restablecer la contraseña del panel de {$site['name']}.\n"
+                 . "Haz clic en el siguiente enlace (válido por 1 hora y de un solo uso):\n\n{$link}\n\n"
+                 . "Tu usuario es: {$admin['username']} (también puedes ingresar con este correo).\n\n"
+                 . "Si no solicitaste esto, ignora este correo: tu contraseña no cambiará.\n\n— {$site['name']}";
+        try {
+            Mailer::send($email, $subject, $body);
+        } catch (Throwable $e) {
+            // Se registra para revisar la configuración de correo, pero no se revela al visitante
+            error_log('[forgot] No se pudo enviar el correo: ' . $e->getMessage());
+            Database::run('DELETE FROM password_resets WHERE token = ?', [$token]);
+            if (config('dev_mode')) {
+                Http::error('No se pudo enviar el correo: ' . $e->getMessage(), 500);
+            }
+        }
     }
 
     Http::json(['ok' => true]);
@@ -181,10 +206,9 @@ if ($method === 'POST' && $path === '/auth/reset') {
         'UPDATE admins SET password_hash = ? WHERE site_id = ? AND LOWER(email) = ?',
         [password_hash($password, PASSWORD_DEFAULT), $siteId, strtolower($reset['email'])]
     );
-    Database::run(
-        'UPDATE password_resets SET used_at = NOW() WHERE id = ?',
-        [$reset['id']]
-    );
+    // El enlace queda inservible y se desbloquea el inicio de sesión (por si hubo intentos fallidos)
+    Database::run('DELETE FROM password_resets WHERE site_id = ? AND email = ?', [$siteId, $reset['email']]);
+    Database::run('DELETE FROM login_attempts WHERE site_id = ?', [$siteId]);
 
     Http::json(['ok' => true]);
 }

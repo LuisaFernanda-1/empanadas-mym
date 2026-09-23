@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
-  <rect width="800" height="600" fill="#fff6e8"/>
-  <ellipse cx="400" cy="330" rx="200" ry="130" fill="#d9962b" opacity="0.6"/>
-  <path d="M200 330 Q400 120 600 330 Z" fill="#b5401f" opacity="0.5"/>
-  <text x="400" y="160" font-family="Outfit,sans-serif" font-size="28" fill="#b5401f" font-weight="700" text-anchor="middle">Empanada de arroz</text>
-  <text x="400" y="520" font-family="Outfit,sans-serif" font-size="14" fill="#b5401f" opacity="0.5" text-anchor="middle">[ PROVISIONAL ]</text>
-</svg>

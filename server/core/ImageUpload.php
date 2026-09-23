@@ -37,7 +37,9 @@ final class ImageUpload
         if (!isset(self::TYPES[$mime]) || @getimagesize($file['tmp_name']) === false) {
             Http::error('Formato no permitido. Usa JPG, PNG o WEBP.', 422, ['field' => 'image']);
         }
-        $ext = self::TYPES[$mime];
+        // Las fotos de productos en PNG (capturas del celular) se guardan como JPG: pesan varias veces menos
+        $toJpeg = $mime === 'image/png' && $folder === 'products' && function_exists('imagecreatetruecolor');
+        $ext = $toJpeg ? 'jpg' : self::TYPES[$mime];
 
         $slug = preg_replace('/[^a-z0-9-]/', '', strtolower($siteSlug));
         $relDir = $slug . '/' . $folder;
@@ -49,7 +51,7 @@ final class ImageUpload
         $name = bin2hex(random_bytes(8)) . '.' . $ext;
         $dest = $absDir . '/' . $name;
 
-        if (!self::reencode($file['tmp_name'], $dest, $mime)) {
+        if (!self::reencode($file['tmp_name'], $dest, $mime, $toJpeg)) {
             // Sin GD disponible: se guarda el original ya validado
             if (!move_uploaded_file($file['tmp_name'], $dest) && !rename($file['tmp_name'], $dest)) {
                 Http::error('No se pudo guardar la imagen.', 500);
@@ -72,7 +74,7 @@ final class ImageUpload
         }
     }
 
-    private static function reencode(string $src, string $dest, string $mime): bool
+    private static function reencode(string $src, string $dest, string $mime, bool $toJpeg = false): bool
     {
         if (!function_exists('imagecreatetruecolor')) {
             return false;
@@ -107,6 +109,17 @@ final class ImageUpload
             imagecopyresampled($resized, $img, 0, 0, 0, 0, $max, $nh, $w, $h);
             imagedestroy($img);
             $img = $resized;
+        }
+
+        if ($toJpeg) {
+            // Fondo blanco donde el PNG era transparente
+            $flat = imagecreatetruecolor(imagesx($img), imagesy($img));
+            imagefill($flat, 0, 0, imagecolorallocate($flat, 255, 255, 255));
+            imagecopy($flat, $img, 0, 0, 0, 0, imagesx($img), imagesy($img));
+            imagedestroy($img);
+            $ok = imagejpeg($flat, $dest, 85);
+            imagedestroy($flat);
+            return $ok;
         }
 
         $ok = match ($mime) {

@@ -1,6 +1,6 @@
 import { defineComponent, reactive, ref } from 'vue'
 import Icon from '@/components/Icon.jsx'
-import { api } from '@/services/http.js'
+import { api } from '@backend'
 
 export default defineComponent({
   name: 'ContactForm',

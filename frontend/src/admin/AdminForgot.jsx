@@ -2,7 +2,7 @@ import { defineComponent, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import Icon from '@/components/Icon.jsx'
 import { store } from '@/store/site.js'
-import { api } from '@/services/http.js'
+import { api } from '@backend'
 
 export default defineComponent({
   name: 'AdminForgot',

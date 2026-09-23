@@ -39,6 +39,9 @@ final class Auth
         $ip = Http::clientIp();
         $window = (int) config('login_window_minutes', 15);
 
+        // Los intentos viejos ya no cuentan: se borran para que la tabla no crezca
+        Database::run('DELETE FROM login_attempts WHERE attempted_at < (NOW() - INTERVAL 1 DAY)');
+
         $recent = Database::one(
             'SELECT COUNT(*) AS n FROM login_attempts
              WHERE site_id = ? AND ip = ? AND attempted_at > (NOW() - INTERVAL ' . $window . ' MINUTE)',
