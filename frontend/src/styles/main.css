@@ -59,6 +59,38 @@ p { margin: 0 0 1em; }
 .section--first { padding-top: 32px; }
 .section--soft { background: var(--c-bg-soft); }
 .section--alt { background: var(--c-accent, #f5efe6); }
+
+/* ---------- Bordes ondulados sutiles ----------
+   En vez de líneas rectas entre fondos distintos, una onda suave del mismo color de la sección
+   que "sobresale" hacia la sección vecina. La forma es una máscara SVG; el color lo pone cada uno. */
+:root {
+  --wave-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 40' preserveAspectRatio='none'%3E%3Cpath d='M0 24C180 10 360 6 560 16s420 26 620 18c110-4 190-14 260-22V40H0z'/%3E%3C/svg%3E");
+  --wave-soft-2: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 40' preserveAspectRatio='none'%3E%3Cpath d='M0 14c150 12 330 22 540 16S960 6 1160 10c120 2 210 12 280 20V40H0z'/%3E%3C/svg%3E");
+  --wave-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 16' preserveAspectRatio='none'%3E%3Cpath d='M0 8C240 1 480 1 720 8s480 7 720 0' fill='none' stroke='%23000' stroke-width='1.5' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --wave-h: clamp(18px, 2.6vw, 34px);
+}
+.section--soft, .section--alt { position: relative; }
+.section--soft::before, .section--soft::after,
+.section--alt::before, .section--alt::after {
+  content: ''; position: absolute; left: 0; right: 0; z-index: 1; height: var(--wave-h);
+  background: inherit; pointer-events: none;
+  -webkit-mask: var(--wave-soft) center / 100% 100% no-repeat; mask: var(--wave-soft) center / 100% 100% no-repeat;
+}
+.section--soft::before, .section--alt::before { bottom: calc(100% - 1px); }
+/* abajo: la misma onda invertida (y con otro dibujo, para que no se vean iguales) */
+.section--soft::after, .section--alt::after {
+  top: calc(100% - 1px); transform: scaleY(-1);
+  -webkit-mask-image: var(--wave-soft-2); mask-image: var(--wave-soft-2);
+}
+/* Líneas divisorias internas: ondita fina en vez de raya recta */
+.about__mv::before, .contact__list::before, .footer__bottom::before {
+  content: ''; position: absolute; left: 0; right: 0; top: -5px; height: 10px; background: var(--c-line);
+  -webkit-mask: var(--wave-line) center / 100% 100% no-repeat; mask: var(--wave-line) center / 100% 100% no-repeat;
+}
+.contact__list::before { background: rgb(255 255 255 / .3); }
+.footer__bottom::before { background: rgb(255 255 255 / .14); }
+/* si es la última sección, el pie de página ya trae su propia onda */
+.section--soft:last-child::after, .section--alt:last-child::after { display: none; }
 .eyebrow { font-size: .78rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--c-primary); margin-bottom: .6em; }
 .h-sub { font-size: 1.5rem; margin-bottom: 24px; }
 
@@ -195,7 +227,11 @@ p { margin: 0 0 1em; }
 }
 
 /* ---------- Beneficios ---------- */
-.features { background: #fff; border-bottom: 1px solid var(--c-line); }
+.features { position: relative; background: #fff; }
+.features::after { /* línea divisoria ondulada en lugar de recta */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 12px; background: var(--c-line);
+  -webkit-mask: var(--wave-line) center / 100% 100% no-repeat; mask: var(--wave-line) center / 100% 100% no-repeat;
+}
 .features__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 32px; padding-block: 8px 28px; }
 .feature { display: flex; align-items: center; gap: 14px; justify-content: center; }
 .feature__icon { flex: none; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; background: var(--c-primary-soft); color: var(--c-primary); }
@@ -247,7 +283,7 @@ p { margin: 0 0 1em; }
 .about__media::before { content: ''; position: absolute; inset: 18px -18px -18px 18px; border: 2px solid var(--c-primary-line); border-radius: var(--radius); z-index: -1; }
 .about h2 { font-size: clamp(1.7rem, 3.2vw, 2.4rem); }
 .about__text { color: var(--c-muted); font-size: 1.02rem; }
-.about__mv { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--c-line); }
+.about__mv { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 28px; padding-top: 28px; }
 .mv { display: flex; gap: 14px; }
 .mv__icon { flex: none; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--c-primary-soft); color: var(--c-primary); }
 .mv h3 { font-size: 1.05rem; margin-bottom: .3em; }
@@ -302,7 +338,7 @@ p { margin: 0 0 1em; }
 .contact__cta > p { opacity: .9; margin-bottom: 1.4em; }
 .contact__cta .btn--light { color: var(--c-primary); }
 .contact__cta-icon { width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; background: rgb(255 255 255 / .16); margin-bottom: 18px; }
-.contact__list { list-style: none; margin: 32px 0 0; padding: 26px 0 0; border-top: 1px solid rgb(255 255 255 / .2); display: grid; gap: 16px; width: 100%; }
+.contact__list { list-style: none; margin: 32px 0 0; padding: 26px 0 0; display: grid; gap: 16px; width: 100%; position: relative; }
 .contact__list li { display: flex; gap: 12px; align-items: center; }
 .contact__icon { flex: none; width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: rgb(255 255 255 / .14); color: #fff; }
 .contact__list small, .contact__socials small { display: block; color: rgb(255 255 255 / .7); font-size: .76rem; font-weight: 500; }
@@ -325,6 +361,11 @@ p { margin: 0 0 1em; }
 .page-banner::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg, color-mix(in srgb, var(--c-primary-dark) 82%, transparent), rgb(8 14 10 / .6)); }
 .page-banner h1 { color: #fff; font-size: clamp(1.9rem, 4.4vw, 2.8rem); margin-bottom: .25em; }
 .page-banner p { opacity: .9; margin: 0; }
+/* borde inferior ondulado hacia el contenido blanco */
+.page-banner::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: var(--wave-h); background: var(--c-bg);
+  -webkit-mask: var(--wave-soft) center / 100% 100% no-repeat; mask: var(--wave-soft) center / 100% 100% no-repeat;
+}
 
 /* ---------- Detalle de producto ---------- */
 .detail { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 64px); align-items: start; }
@@ -366,7 +407,11 @@ p { margin: 0 0 1em; }
 .field__textarea:focus { outline: none; border-color: var(--c-primary); }
 
 /* ---------- Pie de página ---------- */
-.footer { background: color-mix(in srgb, var(--c-primary) 22%, #0e1511); color: rgb(255 255 255 / .75); padding-top: 64px; font-size: .92rem; }
+.footer { position: relative; background: color-mix(in srgb, var(--c-primary) 22%, #0e1511); color: rgb(255 255 255 / .75); padding-top: 64px; font-size: .92rem; }
+.footer::before { /* borde superior ondulado */
+  content: ''; position: absolute; left: 0; right: 0; bottom: calc(100% - 1px); height: var(--wave-h); background: inherit;
+  -webkit-mask: var(--wave-soft-2) center / 100% 100% no-repeat; mask: var(--wave-soft-2) center / 100% 100% no-repeat;
+}
 .footer__grid { display: grid; grid-template-columns: 1.6fr 1fr 1.3fr; gap: 40px; padding-bottom: 48px; }
 .footer__about p { margin: 16px 0 20px; max-width: 38ch; }
 .footer__title { color: #fff; font-size: 1rem; margin-bottom: 16px; font-family: var(--f-body); font-weight: 600; }
@@ -374,7 +419,7 @@ p { margin: 0 0 1em; }
 .footer__list a:hover { color: #fff; }
 .footer__list--icons li { display: flex; gap: 10px; align-items: flex-start; }
 .footer__list--icons .icon { margin-top: 3px; flex: none; color: #fff; }
-.footer__bottom { border-top: 1px solid rgb(255 255 255 / .1); padding-block: 20px; font-size: .84rem; }
+.footer__bottom { position: relative; padding-block: 20px; font-size: .84rem; }
 .footer__bottom-inner { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 24px; }
 .footer__admin { display: inline-flex; align-items: center; gap: .45em; color: #fff; font-weight: 600; padding: .45em .9em; border: 1px solid rgb(255 255 255 / .3); border-radius: 8px; transition: background .2s; }
 .footer__admin:hover { background: rgb(255 255 255 / .1); }
