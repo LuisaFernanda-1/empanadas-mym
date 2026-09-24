@@ -130,11 +130,13 @@ export default defineComponent({
       const full = d && d.gallery.length >= d.maxGallery
       return (
         <div class="admin-page">
-          <header class="admin-page__head">
-            <div>
+          <header class="admin-hero">
+            <div class="admin-hero__text">
+              <span class="admin-hero__eyebrow">Panel de {store.site.name}</span>
               <h1>Imágenes del sitio</h1>
               <p>Cambia el logo y las fotos de tu página. Cada cambio se guarda al instante.</p>
             </div>
+            <span class="admin-hero__icon" aria-hidden="true"><Icon name="image" size={34} /></span>
           </header>
           {error.value && <p class="alert alert--error">{error.value} <button class="link" onClick={load}>Reintentar</button></p>}
 

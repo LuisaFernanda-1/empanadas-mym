@@ -72,14 +72,22 @@ export default defineComponent({
       const label = store.site.productsLabel
       return (
         <div class="admin-page">
-          <header class="admin-page__head">
-            <div>
+          <header class="admin-hero">
+            <div class="admin-hero__text">
+              <span class="admin-hero__eyebrow">Panel de {store.site.name}</span>
               <h1>{label}</h1>
-              <p>Administra los {label.toLowerCase()} de tu tienda. <span class="counter">{items.value.length} de {max.value}</span></p>
+              <p>Agrega, edita u oculta lo que se muestra en tu página.</p>
             </div>
-            <button class="btn btn--primary" disabled={full || loading.value} onClick={() => (editing.value = {})} title={full ? `Máximo ${max.value}` : ''}>
-              <Icon name="plus" size={18} /> Agregar producto
-            </button>
+            <div class="admin-hero__side">
+              <div class="admin-hero__stat">
+                <strong>{items.value.length}<small> / {max.value}</small></strong>
+                <span>{label.toLowerCase()} publicados</span>
+                <i class="admin-hero__bar"><b style={{ width: `${Math.min(100, (items.value.length / max.value) * 100)}%` }} /></i>
+              </div>
+              <button class="btn btn--light" disabled={full || loading.value} onClick={() => (editing.value = {})} title={full ? `Máximo ${max.value}` : ''}>
+                <Icon name="plus" size={18} /> Agregar producto
+              </button>
+            </div>
           </header>
           {full && <p class="alert alert--info">Llegaste al máximo de {max.value} {label.toLowerCase()}. Elimina uno para agregar otro.</p>}
           {error.value && <p class="alert alert--error">{error.value} <button class="link" onClick={load}>Reintentar</button></p>}
