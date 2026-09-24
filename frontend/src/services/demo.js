@@ -70,7 +70,7 @@ const siteData = {
     },
   },
   features: ficha.inicio.beneficios.map((b) => ({ icon: b.icono, title: b.titulo, subtitle: b.subtitulo })),
-  gallery: ficha.galeria.map((g) => ({ image: img(g.imagen), caption: g.descripcion })),
+  gallery: ficha.galeria.map((g, i) => ({ id: i + 1, image: img(g.imagen), caption: g.descripcion })),
   socials: ficha.redes.map((r) => ({ network: r.red, url: r.url })),
 }
 
@@ -168,4 +168,56 @@ export const api = {
     products = products.filter((x) => x.id !== Number(id))
     return { ok: true }
   },
+
+  // Imágenes del sitio (en memoria, igual que en el servidor real)
+  async siteImages() { needAuth(); await wait(150); return siteImagesData() },
+  async setSiteImage(slot, form) {
+    needAuth(); await wait(350)
+    const url = readImage(form, true)
+    if (slot === 'logo') siteData.site.logo = url
+    else if (slot === 'hero') siteData.site.heroImage = url
+    else siteData.site.about.image = url
+    return siteImagesData()
+  },
+  async addGalleryImage(form) {
+    needAuth(); await wait(350)
+    if (siteData.gallery.length >= MAX_GALLERY) throw new ApiError(`La galería admite máximo ${MAX_GALLERY} fotos. Elimina o cambia una.`, 422)
+    const image = readImage(form, true)
+    siteData.gallery.push({ id: Date.now(), image, caption: readCaption(form) })
+    return siteImagesData()
+  },
+  async updateGalleryImage(id, form) {
+    needAuth(); await wait(350)
+    const g = siteData.gallery.find((x) => x.id === Number(id))
+    if (!g) throw new ApiError('Foto no encontrada.', 404)
+    Object.assign(g, { caption: readCaption(form), image: readImage(form, false) ?? g.image })
+    return siteImagesData()
+  },
+  async deleteGalleryImage(id) {
+    needAuth(); await wait(250)
+    siteData.gallery = siteData.gallery.filter((x) => x.id !== Number(id))
+    return siteImagesData()
+  },
+}
+
+const MAX_GALLERY = 3
+function siteImagesData() {
+  const s = siteData.site
+  return { logo: s.logo, hero: s.heroImage, about: s.about.image, gallery: siteData.gallery.map((g) => ({ ...g })), maxGallery: MAX_GALLERY }
+}
+function readImage(form, required) {
+  const file = form.get('image')
+  const has = file && typeof file === 'object' && file.size > 0
+  if (!has) {
+    if (required) throw new ApiError('Selecciona una imagen.', 422, 'image')
+    return undefined
+  }
+  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) throw new ApiError('Formato no permitido. Usa JPG, PNG o WEBP.', 422, 'image')
+  if (file.size > 2 * 1024 * 1024) throw new ApiError('La imagen supera el tamaño permitido (2 MB).', 422, 'image')
+  return URL.createObjectURL(file)
+}
+function readCaption(form) {
+  const c = String(form.get('caption') || '').trim()
+  if (c.length > 120) throw new ApiError('La descripción admite máximo 120 caracteres.', 422, 'caption')
+  return c || null
 }

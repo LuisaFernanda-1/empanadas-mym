@@ -16,6 +16,8 @@ declare(strict_types=1);
  *     --sql=archivo.sql      No toca la base: escribe el SQL para importarlo en phpMyAdmin
  *     --reset-productos      Borra los productos actuales y carga los de la ficha
  *     --reset-clave          Vuelve a poner la contraseña inicial de la ficha
+ *     --reset-imagenes       Vuelve a poner logo, portada, "Quiénes somos" y galería de la ficha
+ *                            (por defecto se respetan las que el emprendedor cambió en su panel)
  *
  *  Es seguro ejecutarlo varias veces: actualiza la información del sitio
  *  pero NO borra los productos que el emprendedor ya editó en su panel.
@@ -40,7 +42,7 @@ foreach ($args as $a) {
     }
 }
 if (!$dir || !is_file("$dir/ficha.json")) {
-    fwrite(STDERR, "Uso: php tools/nuevo-sitio.php <carpeta-del-emprendimiento> [--sql=archivo.sql] [--reset-productos] [--reset-clave]\n");
+    fwrite(STDERR, "Uso: php tools/nuevo-sitio.php <carpeta-del-emprendimiento> [--sql=archivo.sql] [--reset-productos] [--reset-imagenes] [--reset-clave]\n");
     exit(1);
 }
 
@@ -130,7 +132,10 @@ $siteCols = [
     'meta_description' => $f['seo_descripcion'] ?? null,
 ];
 $cols = array_keys($siteCols);
-$update = implode(', ', array_map(fn ($c) => "$c = VALUES($c)", array_diff($cols, ['slug'])));
+// Logo, portada y "Quiénes somos" se pueden cambiar desde el panel: al actualizar la ficha
+// no se pisan (solo al crear el sitio o con --reset-imagenes), igual que los productos.
+$keepImages = isset($opts['reset-imagenes']) ? [] : ['logo', 'hero_image', 'about_image'];
+$update = implode(', ', array_map(fn ($c) => "$c = VALUES($c)", array_diff($cols, ['slug'], $keepImages)));
 $q[] = ['INSERT INTO sites (' . implode(', ', $cols) . ') VALUES (' . implode(', ', array_fill(0, count($cols), '?')) . ")
         ON DUPLICATE KEY UPDATE $update, id = LAST_INSERT_ID(id)", array_values($siteCols)];
 $q[] = ['SET @site_id = LAST_INSERT_ID()', []];
@@ -147,11 +152,16 @@ foreach (array_values($f['inicio']['beneficios'] ?? []) as $i => $b) {
     $q[] = ['INSERT INTO site_features (site_id, icon, title, subtitle, sort_order) VALUES (@site_id, ?, ?, ?, ?)',
         [$b['icono'] ?? 'star', $b['titulo'], $b['subtitulo'] ?? null, $i]];
 }
-$q[] = ['DELETE FROM site_gallery WHERE site_id = @site_id', []];
+// Galería: también se administra desde el panel; solo se carga si está vacía (o con --reset-imagenes)
+if (isset($opts['reset-imagenes'])) {
+    $q[] = ['DELETE FROM site_gallery WHERE site_id = @site_id', []];
+}
+$q[] = ['SET @had_gallery = (SELECT COUNT(*) FROM site_gallery WHERE site_id = @site_id)', []];
 foreach (array_values($f['galeria'] ?? []) as $i => $g) {
     $img = $copy($g['imagen'] ?? null, 'gallery');
     if ($img) {
-        $q[] = ['INSERT INTO site_gallery (site_id, image, caption, sort_order) VALUES (@site_id, ?, ?, ?)', [$img, $g['descripcion'] ?? null, $i]];
+        $q[] = ['INSERT INTO site_gallery (site_id, image, caption, sort_order) SELECT @site_id, ?, ?, ? FROM DUAL WHERE @had_gallery = 0',
+            [$img, $g['descripcion'] ?? null, $i]];
     }
 }
 $q[] = ['DELETE FROM site_socials WHERE site_id = @site_id', []];

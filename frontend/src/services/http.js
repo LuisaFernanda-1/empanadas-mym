@@ -46,4 +46,10 @@ export const api = {
   createProduct: (form) => request('/admin/products', { method: 'POST', form }),
   updateProduct: (id, form) => request(`/admin/products/${id}`, { method: 'POST', form }),
   deleteProduct: (id) => request(`/admin/products/${id}`, { method: 'DELETE' }),
+
+  siteImages: () => request('/admin/site-images'),
+  setSiteImage: (slot, form) => request(`/admin/site-images/${slot}`, { method: 'POST', form }),   // slot: logo | hero | about
+  addGalleryImage: (form) => request('/admin/gallery', { method: 'POST', form }),
+  updateGalleryImage: (id, form) => request(`/admin/gallery/${id}`, { method: 'POST', form }),
+  deleteGalleryImage: (id) => request(`/admin/gallery/${id}`, { method: 'DELETE' }),
 }

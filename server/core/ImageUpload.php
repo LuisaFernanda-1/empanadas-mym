@@ -37,8 +37,9 @@ final class ImageUpload
         if (!isset(self::TYPES[$mime]) || @getimagesize($file['tmp_name']) === false) {
             Http::error('Formato no permitido. Usa JPG, PNG o WEBP.', 422, ['field' => 'image']);
         }
-        // Las fotos de productos en PNG (capturas del celular) se guardan como JPG: pesan varias veces menos
-        $toJpeg = $mime === 'image/png' && $folder === 'products' && function_exists('imagecreatetruecolor');
+        // Las fotos en PNG (capturas del celular) se guardan como JPG: pesan varias veces menos.
+        // El logo no: suele necesitar fondo transparente.
+        $toJpeg = $mime === 'image/png' && $folder !== 'logo' && function_exists('imagecreatetruecolor');
         $ext = $toJpeg ? 'jpg' : self::TYPES[$mime];
 
         $slug = preg_replace('/[^a-z0-9-]/', '', strtolower($siteSlug));

@@ -26,7 +26,10 @@ const routes = [
     path: '/admin',
     component: () => import('./admin/AdminLayout.jsx'),
     meta: { auth: true },
-    children: [{ path: 'productos', component: () => import('./admin/AdminProducts.jsx'), meta: { title: 'Panel · Productos' } }],
+    children: [
+      { path: 'productos', component: () => import('./admin/AdminProducts.jsx'), meta: { title: 'Panel · Productos' } },
+      { path: 'imagenes', component: () => import('./admin/AdminSiteImages.jsx'), meta: { title: 'Panel · Imágenes del sitio' } },
+    ],
   },
 ]
 

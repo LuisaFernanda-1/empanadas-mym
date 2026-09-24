@@ -167,6 +167,9 @@ php tools/cambiar-clave.php --listar        # los 45 sitios con dominios y produ
 - Agregar productos (máximo 10), editarlos y eliminarlos.
 - Cambiar nombre, precio (vacío = "Consultar precio"), descripción corta e imagen.
 - Mostrar u ocultar un producto sin borrarlo.
+- **Imágenes del sitio:** cambiar el logo, la foto de portada, la de "Quiénes somos" y la galería (máximo 3 fotos, con descripción). La imagen anterior se borra sola del servidor.
+
+> Al volver a ejecutar `nuevo-sitio.php` con la ficha, **no** se pisan las imágenes ni los productos que el emprendedor cambió en su panel. Para volver a poner los de la ficha: `--reset-imagenes` y `--reset-productos`.
 - Cerrar sesión.
 
 Nada más, a propósito: no hay pedidos, pagos, inventario, estadísticas ni múltiples usuarios.

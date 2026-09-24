@@ -1,4 +1,4 @@
-// Estructura del panel: barra lateral (Productos · Ver sitio · Cerrar sesión)
+// Estructura del panel: barra lateral (Productos · Imágenes del sitio · Ver sitio · Cerrar sesión)
 import { defineComponent } from 'vue'
 import { RouterView, RouterLink, useRouter } from 'vue-router'
 import Icon from '@/components/Icon.jsx'
@@ -23,6 +23,7 @@ export default defineComponent({
           </div>
           <nav class="admin__nav">
             <RouterLink to="/admin/productos" class="admin__link" activeClass="is-active"><Icon name="package" size={19} /> <span>{store.site.productsLabel}</span></RouterLink>
+            <RouterLink to="/admin/imagenes" class="admin__link" activeClass="is-active"><Icon name="image" size={19} /> <span>Imágenes del sitio</span></RouterLink>
             <RouterLink to="/" class="admin__link" target={isDemo ? undefined : '_blank'}><Icon name="external" size={19} /> <span>Ver mi sitio</span></RouterLink>
             <button class="admin__link" onClick={out}><Icon name="logout" size={19} /> <span>Cerrar sesión</span></button>
           </nav>

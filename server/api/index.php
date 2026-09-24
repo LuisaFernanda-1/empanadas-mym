@@ -19,6 +19,11 @@ declare(strict_types=1);
  *   POST   /api/admin/products           multipart: name, price, description, is_active, image
  *   POST   /api/admin/products/{id}      multipart (actualizar; image opcional)
  *   DELETE /api/admin/products/{id}
+ *   GET    /api/admin/site-images                 logo, portada, quiénes somos y galería
+ *   POST   /api/admin/site-images/{logo|hero|about}   multipart: image
+ *   POST   /api/admin/gallery                     multipart: image, caption (máximo 3 fotos)
+ *   POST   /api/admin/gallery/{id}                multipart: caption, image opcional
+ *   DELETE /api/admin/gallery/{id}
  */
 
 require __DIR__ . '/../core/bootstrap.php';
@@ -273,6 +278,98 @@ if (str_starts_with($path, '/admin/')) {
             Database::run('DELETE FROM products WHERE id = ? AND site_id = ?', [$current['id'], $siteId]);
             ImageUpload::delete($current['image'], $site['slug']);
             Http::json(['ok' => true]);
+        }
+    }
+
+    // ---------------------------------------------------------------- Panel: imágenes del sitio
+    // Logo, foto de portada, foto de "Quiénes somos" y galería (máximo 3)
+    $maxGallery = 3;
+    $siteImages = function () use ($siteId, $maxGallery): array {
+        $s = Database::one('SELECT logo, hero_image, about_image FROM sites WHERE id = ?', [$siteId]);
+        return [
+            'logo'    => SiteData::url($s['logo']),
+            'hero'    => SiteData::url($s['hero_image']),
+            'about'   => SiteData::url($s['about_image']),
+            'gallery' => array_map(
+                fn ($g) => ['id' => (int) $g['id'], 'image' => SiteData::url($g['image']), 'caption' => $g['caption']],
+                Database::all('SELECT id, image, caption FROM site_gallery WHERE site_id = ? ORDER BY sort_order, id', [$siteId])
+            ),
+            'maxGallery' => $maxGallery,
+        ];
+    };
+    $hasFile = fn (): bool => !empty($_FILES['image']) && ($_FILES['image']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE;
+    // Borra una imagen reemplazada solo si ninguna otra parte del sitio la sigue usando
+    $dropImage = function (?string $img) use ($siteId, $site): void {
+        if (!$img) {
+            return;
+        }
+        $used = (int) Database::one(
+            'SELECT (SELECT COUNT(*) FROM sites WHERE id = ? AND (logo = ? OR hero_image = ? OR about_image = ?))
+                  + (SELECT COUNT(*) FROM site_gallery WHERE site_id = ? AND image = ?)
+                  + (SELECT COUNT(*) FROM products WHERE site_id = ? AND image = ?) AS n',
+            [$siteId, $img, $img, $img, $siteId, $img, $siteId, $img]
+        )['n'];
+        if ($used === 0) {
+            ImageUpload::delete($img, $site['slug']);
+        }
+    };
+    $caption = function (array $in): ?string {
+        $c = trim((string) ($in['caption'] ?? ''));
+        if (mb_strlen($c) > 120) {
+            Http::error('La descripción admite máximo 120 caracteres.', 422, ['field' => 'caption']);
+        }
+        return $c === '' ? null : $c;
+    };
+
+    if ($method === 'GET' && $path === '/admin/site-images') {
+        Http::json($siteImages());
+    }
+
+    if ($method === 'POST' && preg_match('~^/admin/site-images/(logo|hero|about)$~', $path, $m)) {
+        $column = ['logo' => 'logo', 'hero' => 'hero_image', 'about' => 'about_image'][$m[1]];
+        $hasFile() || Http::error('Selecciona una imagen.', 422, ['field' => 'image']);
+        $old = Database::one("SELECT $column AS img FROM sites WHERE id = ?", [$siteId])['img'];
+        $new = ImageUpload::store($_FILES['image'], $site['slug'], $m[1] === 'logo' ? 'logo' : 'site');
+        Database::run("UPDATE sites SET $column = ? WHERE id = ?", [$new, $siteId]);
+        $dropImage($old);
+        Http::json($siteImages());
+    }
+
+    if ($method === 'POST' && $path === '/admin/gallery') {
+        $in = Http::input();
+        $count = (int) Database::one('SELECT COUNT(*) AS n FROM site_gallery WHERE site_id = ?', [$siteId])['n'];
+        if ($count >= $maxGallery) {
+            Http::error("La galería admite máximo {$maxGallery} fotos. Elimina o cambia una.", 422);
+        }
+        $hasFile() || Http::error('Selecciona una imagen.', 422, ['field' => 'image']);
+        $text = $caption($in);
+        $image = ImageUpload::store($_FILES['image'], $site['slug'], 'gallery');
+        $sort = (int) Database::one('SELECT COALESCE(MAX(sort_order), -1) + 1 AS n FROM site_gallery WHERE site_id = ?', [$siteId])['n'];
+        Database::insert('INSERT INTO site_gallery (site_id, image, caption, sort_order) VALUES (?, ?, ?, ?)', [$siteId, $image, $text, $sort]);
+        Http::json($siteImages(), 201);
+    }
+
+    if (preg_match('~^/admin/gallery/(\d+)$~', $path, $m)) {
+        $item = Database::one('SELECT * FROM site_gallery WHERE id = ? AND site_id = ?', [(int) $m[1], $siteId]);
+        $item ?? Http::error('Foto no encontrada.', 404);
+
+        if ($method === 'POST') {
+            $text = $caption(Http::input());
+            $image = $item['image'];
+            if ($hasFile()) {
+                $image = ImageUpload::store($_FILES['image'], $site['slug'], 'gallery');
+            }
+            Database::run('UPDATE site_gallery SET image = ?, caption = ? WHERE id = ? AND site_id = ?', [$image, $text, $item['id'], $siteId]);
+            if ($image !== $item['image']) {
+                $dropImage($item['image']);
+            }
+            Http::json($siteImages());
+        }
+
+        if ($method === 'DELETE') {
+            Database::run('DELETE FROM site_gallery WHERE id = ? AND site_id = ?', [$item['id'], $siteId]);
+            $dropImage($item['image']);
+            Http::json($siteImages());
         }
     }
 }
