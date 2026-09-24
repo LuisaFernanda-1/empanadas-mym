@@ -49,7 +49,6 @@ export default defineComponent({
           <div class="footer__bottom">
             <div class="container footer__bottom-inner">
               <span>© {new Date().getFullYear()} {s.name}. Todos los derechos reservados.</span>
-              <RouterLink to="/admin" class="footer__admin"><Icon name="lock" size={14} /> Administrar productos</RouterLink>
             </div>
           </div>
         </footer>

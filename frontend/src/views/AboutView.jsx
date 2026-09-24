@@ -9,7 +9,7 @@ export default defineComponent({
   setup() {
     return () => (
       <>
-        <PageBanner title="Quiénes somos" subtitle={`Conoce la historia detrás de ${store.site.name}.`} image={store.site.about.image} />
+        <PageBanner title="Quiénes somos" subtitle={`Conoce la historia detrás de ${store.site.name}.`} />
         <section class="section"><div class="container"><AboutBlock /></div></section>
         <FeatureStrip />
       </>

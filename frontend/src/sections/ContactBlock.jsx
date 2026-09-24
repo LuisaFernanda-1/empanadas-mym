@@ -4,15 +4,15 @@ import { defineComponent } from 'vue'
 import Icon, { socialIcon, socialLabel } from '@/components/Icon.jsx'
 import ContactForm from '@/components/ContactForm.jsx'
 import { store } from '@/store/site.js'
-import { whatsappLink, prettyPhone } from '@/utils/format.js'
+import { whatsappLink } from '@/utils/format.js'
 
 export default defineComponent({
   name: 'ContactBlock',
   setup() {
     return () => {
       const c = store.site.contact
+      // El WhatsApp no se repite en la lista: ya está el botón "Iniciar conversación"
       const items = [
-        { icon: 'whatsapp', label: 'WhatsApp', value: c.phone || prettyPhone(c.whatsapp), href: whatsappLink(c.whatsapp, c.whatsappMessage) },
         c.email && { icon: 'mail', label: 'Correo', value: c.email, href: `mailto:${c.email}` },
         (c.address || c.city) && { icon: 'map-pin', label: 'Ubicación', value: [c.address, c.city].filter(Boolean).join(', '), href: c.mapUrl },
         c.schedule && { icon: 'clock', label: 'Horario de atención', value: c.schedule },
@@ -28,17 +28,19 @@ export default defineComponent({
               <Icon name="whatsapp" size={20} /> Iniciar conversación
             </a>
 
-            <ul class="contact__list">
-              {items.map((it) => (
-                <li key={it.label}>
-                  <span class="contact__icon"><Icon name={it.icon} size={18} /></span>
-                  <div>
-                    <small>{it.label}</small>
-                    {it.href ? <a href={it.href} target={it.href.startsWith('http') ? '_blank' : undefined} rel="noopener">{it.value}</a> : <span>{it.value}</span>}
-                  </div>
-                </li>
-              ))}
-            </ul>
+            {items.length > 0 && (
+              <ul class="contact__list">
+                {items.map((it) => (
+                  <li key={it.label}>
+                    <span class="contact__icon"><Icon name={it.icon} size={18} /></span>
+                    <div>
+                      <small>{it.label}</small>
+                      {it.href ? <a href={it.href} target={it.href.startsWith('http') ? '_blank' : undefined} rel="noopener">{it.value}</a> : <span>{it.value}</span>}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
 
             {store.socials.length > 0 && (
               <div class="contact__socials">
