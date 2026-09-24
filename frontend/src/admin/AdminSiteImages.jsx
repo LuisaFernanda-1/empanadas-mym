@@ -11,9 +11,9 @@ const MAX_BYTES = 2 * 1024 * 1024
 const TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
 const SLOTS = [
-  { key: 'logo', title: 'Logo', hint: 'Aparece arriba en todas las páginas. Mejor en PNG con fondo transparente.', shape: 'logo' },
-  { key: 'hero', title: 'Foto de portada', hint: 'La foto grande de la página de inicio. Se muestra cuadrada.', shape: 'square' },
-  { key: 'about', title: 'Foto de "Quiénes somos"', hint: 'Acompaña la historia del negocio. Se muestra vertical.', shape: 'tall' },
+  { key: 'logo', title: 'Logo', hint: 'Arriba en todas las páginas. Ideal: PNG con fondo transparente.', shape: 'logo' },
+  { key: 'hero', title: 'Foto de portada', hint: 'La foto grande de la página de inicio.', shape: 'square' },
+  { key: 'about', title: 'Foto de "Quiénes somos"', hint: 'Acompaña la historia del negocio.', shape: 'square' },
 ]
 
 export default defineComponent({
@@ -139,70 +139,83 @@ export default defineComponent({
           {error.value && <p class="alert alert--error">{error.value} <button class="link" onClick={load}>Reintentar</button></p>}
 
           {loading.value ? (
-            <div class="simg-grid">{[1, 2, 3].map((i) => <div key={i} class="skeleton simg-skel" />)}</div>
+            <section class="simg-panel">
+              <div class="table-loading">{[1, 2, 3].map((i) => <div key={i} class="skeleton skeleton--row" />)}</div>
+            </section>
           ) : d && (
             <>
-              <h2 class="admin-subtitle">Imágenes principales</h2>
-              <div class="simg-grid">
-                {SLOTS.map((s) => {
-                  const url = d[s.key]
-                  return (
-                    <article key={s.key} class={['simg-card', { 'is-busy': busy[s.key] }]}>
-                      <div class={['simg-card__media', `simg-card__media--${s.shape}`]}>
-                        {url ? <img src={url} alt="" /> : <span class="simg-card__empty"><Icon name="image" size={30} />Sin imagen</span>}
-                        {busy[s.key] && <span class="simg-card__loading">Subiendo…</span>}
-                      </div>
-                      <div class="simg-card__body">
-                        <h3>{s.title}</h3>
-                        <p class="hint">{s.hint}</p>
-                        {picker(url ? 'Cambiar imagen' : 'Subir imagen', (e) => changeSlot(s.key, e), busy[s.key])}
-                        {errors[s.key] && <small class="field__error">{errors[s.key]}</small>}
-                      </div>
-                    </article>
-                  )
-                })}
-              </div>
-
-              <h2 class="admin-subtitle">
-                Galería <span class="counter">{d.gallery.length} de {d.maxGallery}</span>
-              </h2>
-              <p class="hint admin-subtitle__hint">Estas fotos aparecen en "Así trabajamos" y en la página Galería.</p>
-              <div class="simg-grid">
-                {d.gallery.map((g) => {
-                  const dirty = (captions[g.id] ?? '') !== (g.caption ?? '')
-                  return (
-                    <article key={g.id} class={['simg-card', { 'is-busy': busy[g.id] }]}>
-                      <div class="simg-card__media simg-card__media--wide">
-                        <img src={g.image} alt="" />
-                        {busy[g.id] && <span class="simg-card__loading">Guardando…</span>}
-                      </div>
-                      <div class="simg-card__body">
-                        <label class="field simg-card__caption">
-                          <span>Descripción (opcional)</span>
-                          <input v-model={captions[g.id]} maxlength={120} placeholder="Ej: Así preparamos cada pedido" />
-                        </label>
-                        <div class="simg-card__actions">
-                          {dirty && <button class="btn btn--primary btn--sm" disabled={busy[g.id]} onClick={() => saveCaption(g)}>Guardar descripción</button>}
-                          {picker('Cambiar foto', (e) => changeGallery(g, e), busy[g.id])}
-                          <button class="icon-btn icon-btn--danger" disabled={busy[g.id]} onClick={() => (toDelete.value = g)} aria-label="Eliminar foto" title="Eliminar"><Icon name="trash" size={18} /></button>
+              <section class="simg-panel">
+                <header class="simg-panel__head">
+                  <h2>Imágenes principales</h2>
+                  <p>JPG, PNG o WEBP · máximo 2 MB</p>
+                </header>
+                <ul class="simg-list">
+                  {SLOTS.map((s) => {
+                    const url = d[s.key]
+                    return (
+                      <li key={s.key} class="simg-row">
+                        <div class={['simg-thumb', `simg-thumb--${s.shape}`]}>
+                          {url ? <img src={url} alt="" /> : <Icon name="image" size={22} />}
+                          {busy[s.key] && <span class="simg-thumb__busy" />}
                         </div>
-                        {errors[g.id] && <small class="field__error">{errors[g.id]}</small>}
-                      </div>
-                    </article>
-                  )
-                })}
+                        <div class="simg-row__info">
+                          <strong>{s.title}</strong>
+                          <span>{s.hint}</span>
+                          {errors[s.key] && <small class="field__error">{errors[s.key]}</small>}
+                        </div>
+                        <div class="simg-row__actions">
+                          {picker(busy[s.key] ? 'Subiendo…' : url ? 'Cambiar' : 'Subir', (e) => changeSlot(s.key, e), busy[s.key])}
+                        </div>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </section>
 
-                {!full && (
-                  <label class={['simg-add', { 'is-busy': busy.new }]}>
-                    <Icon name="plus" size={28} />
-                    <strong>{busy.new ? 'Subiendo…' : 'Agregar foto'}</strong>
-                    <small>JPG, PNG o WEBP · máximo 2 MB</small>
-                    <input type="file" accept="image/jpeg,image/png,image/webp" class="sr-only" disabled={busy.new} onChange={addGallery} />
-                    {errors.new && <small class="field__error">{errors.new}</small>}
-                  </label>
-                )}
-              </div>
-              {full && <p class="alert alert--info">La galería tiene el máximo de {d.maxGallery} fotos. Puedes cambiar o eliminar una.</p>}
+              <section class="simg-panel">
+                <header class="simg-panel__head">
+                  <h2>Galería <span class="counter">{d.gallery.length} de {d.maxGallery}</span></h2>
+                  <p>Aparecen en "Así trabajamos" y en la página Galería.</p>
+                </header>
+                <ul class="simg-list">
+                  {d.gallery.length === 0 && <li class="simg-empty">Aún no hay fotos en la galería.</li>}
+                  {d.gallery.map((g, i) => {
+                    const dirty = (captions[g.id] ?? '') !== (g.caption ?? '')
+                    return (
+                      <li key={g.id} class="simg-row">
+                        <div class="simg-thumb simg-thumb--wide">
+                          <img src={g.image} alt="" />
+                          {busy[g.id] && <span class="simg-thumb__busy" />}
+                        </div>
+                        <div class="simg-row__info">
+                          <strong>Foto {i + 1}</strong>
+                          <div class="simg-caption">
+                            <input v-model={captions[g.id]} maxlength={120} placeholder="Descripción (opcional)" aria-label={`Descripción de la foto ${i + 1}`}
+                              onKeydown={(e) => e.key === 'Enter' && dirty && saveCaption(g)} />
+                            {dirty && <button class="btn btn--primary btn--sm" disabled={busy[g.id]} onClick={() => saveCaption(g)}>Guardar</button>}
+                          </div>
+                          {errors[g.id] && <small class="field__error">{errors[g.id]}</small>}
+                        </div>
+                        <div class="simg-row__actions">
+                          {picker('Cambiar', (e) => changeGallery(g, e), busy[g.id])}
+                          <button class="icon-btn icon-btn--danger" disabled={busy[g.id]} onClick={() => (toDelete.value = g)} aria-label={`Eliminar foto ${i + 1}`} title="Eliminar"><Icon name="trash" size={18} /></button>
+                        </div>
+                      </li>
+                    )
+                  })}
+                </ul>
+                <footer class="simg-panel__foot">
+                  {full ? (
+                    <span class="hint">La galería está completa. Cambia o elimina una foto para poner otra.</span>
+                  ) : (
+                    <label class={['simg-add', { 'is-disabled': busy.new }]}>
+                      <Icon name="plus" size={18} /> {busy.new ? 'Subiendo…' : 'Agregar foto'}
+                      <input type="file" accept="image/jpeg,image/png,image/webp" class="sr-only" disabled={busy.new} onChange={addGallery} />
+                    </label>
+                  )}
+                  {errors.new && <small class="field__error">{errors.new}</small>}
+                </footer>
+              </section>
             </>
           )}
 

@@ -126,33 +126,45 @@
 .toast { position: fixed; bottom: 24px; left: 50%; translate: -50% 0; z-index: 95; background: #1e2a33; color: #fff; padding: 12px 18px; border-radius: 12px; display: flex; align-items: center; gap: 8px; font-size: .92rem; box-shadow: var(--shadow); animation: rise .2s var(--ease); }
 .toast .icon { color: #7ee2a0; }
 
-/* ---------- Imágenes del sitio ---------- */
-.admin-subtitle { display: flex; align-items: center; gap: 4px; font-size: 1.15rem; margin: 8px 0 14px; }
-.admin-subtitle__hint { margin: -8px 0 14px; }
-* + .admin-subtitle { margin-top: 36px; }
-.simg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
-.simg-skel { height: 320px; border-radius: var(--radius); }
-.simg-card { background: #fff; border: 1px solid #e5e8ea; border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; transition: opacity .2s; }
-.simg-card.is-busy { opacity: .75; }
-.simg-card__media { position: relative; background: #f3f5f6; display: grid; place-items: center; overflow: hidden; }
-.simg-card__media img { width: 100%; height: 100%; object-fit: cover; }
-.simg-card__media--square { aspect-ratio: 1; }
-.simg-card__media--tall { aspect-ratio: 4 / 4.4; }
-.simg-card__media--wide { aspect-ratio: 4 / 3; }
-/* el logo se ve completo, sobre cuadritos para notar si tiene fondo transparente */
-.simg-card__media--logo { aspect-ratio: 1; padding: 28px; background: repeating-conic-gradient(#eef1f3 0 25%, #fff 0 50%) 0 0 / 18px 18px; }
-.simg-card__media--logo img { object-fit: contain; max-height: 100%; }
-.simg-card__empty { display: grid; justify-items: center; gap: 6px; color: var(--c-muted); font-size: .85rem; }
-.simg-card__loading { position: absolute; inset: 0; display: grid; place-items: center; background: rgb(255 255 255 / .7); font-weight: 600; color: var(--c-primary); }
-.simg-card__body { padding: 16px; display: grid; gap: 10px; align-content: start; flex: 1; }
-.simg-card__body h3 { font-size: 1rem; margin: 0; }
-.simg-card__body .hint { margin: -4px 0 2px; }
-.simg-card__body .btn { justify-self: start; cursor: pointer; }
-.simg-card__caption { margin-bottom: 0; }
-.simg-card__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.simg-card__actions .icon-btn { margin-left: auto; }
+/* ---------- Imágenes del sitio ----------
+   Dos recuadros con filas iguales (miniatura · nombre y ayuda · botones), como la lista de productos */
+.simg-panel { background: #fff; border: 1px solid #e5e8ea; border-radius: var(--radius); overflow: hidden; margin-bottom: 24px; max-width: 880px; }
+.simg-panel__head { padding: 18px 22px; border-bottom: 1px solid #eef0f2; }
+.simg-panel__head h2 { display: flex; align-items: center; gap: 4px; font-size: 1.05rem; margin: 0 0 2px; }
+.simg-panel__head p { margin: 0; color: var(--c-muted); font-size: .85rem; }
+.simg-list { list-style: none; margin: 0; padding: 0; }
+.simg-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px; padding: 14px 22px; }
+.simg-row + .simg-row { border-top: 1px solid #f1f3f4; }
+.simg-row__info { display: grid; gap: 3px; min-width: 0; }
+.simg-row__info strong { font-size: .95rem; }
+.simg-row__info > span { color: var(--c-muted); font-size: .85rem; }
+.simg-row__actions { display: flex; align-items: center; gap: 8px; }
+.simg-row__actions .btn { cursor: pointer; min-width: 96px; }
 .btn.is-disabled { opacity: .55; pointer-events: none; }
-.simg-add { min-height: 240px; border: 2px dashed #d5dadd; border-radius: var(--radius); display: grid; place-content: center; justify-items: center; gap: 6px; text-align: center; padding: 20px; color: var(--c-muted); cursor: pointer; transition: border-color .2s, background .2s, color .2s; }
-.simg-add:hover { border-color: var(--c-primary); background: var(--c-primary-soft); color: var(--c-primary); }
-.simg-add strong { color: var(--c-text); }
-.simg-add.is-busy { pointer-events: none; opacity: .7; }
+
+.simg-thumb { position: relative; width: 72px; height: 72px; border-radius: 12px; overflow: hidden; background: #f3f5f6; border: 1px solid #e8ebed; display: grid; place-items: center; color: var(--c-muted); }
+.simg-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.simg-thumb--wide { width: 96px; }
+/* el logo se ve completo, sobre cuadritos para notar si tiene fondo transparente */
+.simg-thumb--logo { padding: 8px; background: repeating-conic-gradient(#eef1f3 0 25%, #fff 0 50%) 0 0 / 12px 12px; }
+.simg-thumb--logo img { object-fit: contain; }
+.simg-thumb__busy { position: absolute; inset: 0; background: rgb(255 255 255 / .65); }
+.simg-thumb__busy::after { content: ''; position: absolute; inset: 0; margin: auto; width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--c-primary-soft); border-top-color: var(--c-primary); animation: spin .8s linear infinite; }
+
+.simg-caption { display: flex; gap: 8px; align-items: center; margin-top: 2px; }
+.simg-caption input { flex: 1; min-width: 0; font: inherit; font-size: .88rem; padding: 7px 11px; border: 1.5px solid #e1e5e8; border-radius: 8px; background: #fbfcfc; color: var(--c-text); transition: border-color .2s, background .2s; }
+.simg-caption input:hover { border-color: #cfd5d9; }
+.simg-caption input:focus { outline: none; border-color: var(--c-primary); background: #fff; box-shadow: 0 0 0 3px var(--c-primary-soft); }
+.simg-empty { padding: 22px; text-align: center; color: var(--c-muted); font-size: .9rem; }
+
+.simg-panel__foot { padding: 14px 22px; border-top: 1px solid #eef0f2; background: #fafbfb; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.simg-add { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border: 1.5px dashed #c9d0d4; border-radius: 10px; font-weight: 600; font-size: .9rem; color: var(--c-primary); cursor: pointer; transition: border-color .2s, background .2s; }
+.simg-add:hover { border-color: var(--c-primary); background: var(--c-primary-soft); }
+.simg-add.is-disabled { opacity: .6; pointer-events: none; }
+
+@media (max-width: 640px) {
+  .simg-row { grid-template-columns: auto 1fr; gap: 12px 14px; padding: 14px 16px; }
+  .simg-row__actions { grid-column: 1 / -1; }
+  .simg-row__actions .btn { flex: 1; }
+  .simg-panel__head, .simg-panel__foot { padding-inline: 16px; }
+}
