@@ -1,1 +1,0 @@
-import{l as e,u as t}from"./Icon-BHJAKu0E.js";var n=t({name:`PageBanner`,props:{title:String,subtitle:String},setup(t){return()=>e(`section`,{class:`page-banner`},[e(`div`,{class:`container page-banner__inner`},[e(`h1`,null,[t.title]),t.subtitle&&e(`p`,null,[t.subtitle])])])}});export{n as t};

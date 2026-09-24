@@ -366,30 +366,28 @@ p { margin: 0 0 1em; }
 .socials--dark .socials__link:hover { background: var(--c-primary); color: #fff; }
 
 /* ---------- Banner de páginas internas ---------- */
-/* Color sólido de la marca; dos círculos translúcidos (uno con el color secundario) y puntos sutiles
-   le dan profundidad sin usar foto. Mismo lenguaje que el panel "¿Listo para hacer tu pedido?" */
+/* Mismo estilo que la portada: fondo crema claro con brillos suaves, título oscuro,
+   detalles con el color de la marca y ondas en capas hacia el contenido blanco */
 .page-banner {
-  position: relative; overflow: hidden; isolation: isolate; text-align: center; color: #fff;
-  padding-block: clamp(56px, 8vw, 88px) calc(clamp(56px, 8vw, 88px) + var(--wave-h));
-  background: linear-gradient(160deg, var(--c-primary) 0%, var(--c-primary-dark) 100%);
-}
-.page-banner::before {
-  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  --ink: color-mix(in srgb, var(--c-primary) 18%, #1c1410);
+  --pb-wave: clamp(40px, 5vw, 72px);
+  position: relative; overflow: hidden; isolation: isolate; text-align: center; color: var(--ink);
+  padding-block: clamp(48px, 7vw, 80px) calc(clamp(40px, 6vw, 64px) + var(--pb-wave));
   background:
-    radial-gradient(circle at 88% 8%, rgb(255 255 255 / .09) 0 150px, transparent 151px),
-    radial-gradient(circle at 6% 100%, rgb(255 255 255 / .07) 0 130px, transparent 131px),
-    radial-gradient(rgb(255 255 255 / .14) 1.1px, transparent 1.3px) 0 0 / 22px 22px;
+    radial-gradient(34% 70% at 86% 20%, color-mix(in srgb, var(--c-secondary) 20%, transparent), transparent 72%),
+    radial-gradient(30% 60% at 10% 90%, color-mix(in srgb, var(--c-primary) 8%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--c-accent) 45%, #fff) 0%, var(--c-accent) 100%);
 }
-.page-banner h1 { color: #fff; font-size: clamp(1.9rem, 4.4vw, 2.8rem); margin-bottom: .25em; }
+.page-banner__eyebrow { display: inline-flex; align-items: center; gap: .7em; font-size: .74rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--c-primary); margin: 0 0 1em; }
+.page-banner__eyebrow::before, .page-banner__eyebrow::after { content: ''; width: 24px; height: 2px; border-radius: 2px; background: currentColor; opacity: .7; }
+.page-banner h1 { color: var(--ink); font-size: clamp(2rem, 4.6vw, 3rem); letter-spacing: -.02em; margin-bottom: .3em; }
 .page-banner h1::after { /* trazo corto bajo el título, como en la portada */
-  content: ''; display: block; width: 56px; height: 4px; border-radius: 4px; margin: .45em auto 0; background: var(--c-secondary);
+  content: ''; display: block; width: 64px; height: 4px; border-radius: 4px; margin: .4em auto 0; background: var(--c-secondary); opacity: .8;
 }
-.page-banner p { opacity: .9; margin: 0; }
-/* borde inferior ondulado hacia el contenido blanco */
-.page-banner::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: var(--wave-h); background: var(--c-bg);
-  -webkit-mask: var(--wave-soft) center / 100% 100% no-repeat; mask: var(--wave-soft) center / 100% 100% no-repeat;
-}
+.page-banner__text { color: color-mix(in srgb, var(--ink) 68%, transparent); margin: 0 auto; max-width: 52ch; }
+.page-banner__wave { position: absolute; left: 0; bottom: -1px; width: 100%; height: var(--pb-wave); display: block; }
+.page-banner__wave-back { fill: color-mix(in srgb, var(--c-secondary) 30%, transparent); }
+.page-banner__wave-front { fill: var(--c-bg); }
 
 /* ---------- Detalle de producto ---------- */
 .detail { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 64px); align-items: start; }
