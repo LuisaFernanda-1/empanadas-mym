@@ -143,7 +143,7 @@ export default defineComponent({
               <div class="table-loading">{[1, 2, 3].map((i) => <div key={i} class="skeleton skeleton--row" />)}</div>
             </section>
           ) : d && (
-            <>
+            <div class="simg-layout">
               <section class="simg-panel">
                 <header class="simg-panel__head">
                   <h2>Imágenes principales</h2>
@@ -182,23 +182,25 @@ export default defineComponent({
                   {d.gallery.map((g, i) => {
                     const dirty = (captions[g.id] ?? '') !== (g.caption ?? '')
                     return (
-                      <li key={g.id} class="simg-row">
+                      <li key={g.id} class="simg-row simg-row--gallery">
                         <div class="simg-thumb simg-thumb--wide">
                           <img src={g.image} alt="" />
                           {busy[g.id] && <span class="simg-thumb__busy" />}
                         </div>
                         <div class="simg-row__info">
-                          <strong>Foto {i + 1}</strong>
+                          <div class="simg-row__top">
+                            <strong>Foto {i + 1}</strong>
+                            <div class="simg-row__actions">
+                              {picker('Cambiar', (e) => changeGallery(g, e), busy[g.id])}
+                              <button class="icon-btn icon-btn--danger" disabled={busy[g.id]} onClick={() => (toDelete.value = g)} aria-label={`Eliminar foto ${i + 1}`} title="Eliminar"><Icon name="trash" size={18} /></button>
+                            </div>
+                          </div>
                           <div class="simg-caption">
                             <input v-model={captions[g.id]} maxlength={120} placeholder="Descripción (opcional)" aria-label={`Descripción de la foto ${i + 1}`}
                               onKeydown={(e) => e.key === 'Enter' && dirty && saveCaption(g)} />
                             {dirty && <button class="btn btn--primary btn--sm" disabled={busy[g.id]} onClick={() => saveCaption(g)}>Guardar</button>}
                           </div>
                           {errors[g.id] && <small class="field__error">{errors[g.id]}</small>}
-                        </div>
-                        <div class="simg-row__actions">
-                          {picker('Cambiar', (e) => changeGallery(g, e), busy[g.id])}
-                          <button class="icon-btn icon-btn--danger" disabled={busy[g.id]} onClick={() => (toDelete.value = g)} aria-label={`Eliminar foto ${i + 1}`} title="Eliminar"><Icon name="trash" size={18} /></button>
                         </div>
                       </li>
                     )
@@ -216,7 +218,7 @@ export default defineComponent({
                   {errors.new && <small class="field__error">{errors.new}</small>}
                 </footer>
               </section>
-            </>
+            </div>
           )}
 
           {toDelete.value && (
