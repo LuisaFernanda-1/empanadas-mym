@@ -54,8 +54,8 @@ export default defineComponent({
               <RouterLink to="/admin" class="btn btn--outline btn--sm header__admin" title="Administrar productos" aria-label="Administrar productos">
                 <Icon name="lock" size={16} /> <span class="header__admin-label">Administrar</span>
               </RouterLink>
-              <a href={wa} target="_blank" rel="noopener" class="btn btn--primary btn--sm header__wa">
-                <Icon name="whatsapp" size={18} /> WhatsApp
+              <a href={wa} target="_blank" rel="noopener" class="btn btn--primary btn--sm header__wa" aria-label="Escríbenos por WhatsApp">
+                <Icon name="whatsapp" size={18} /> <span class="header__wa-label">WhatsApp</span>
               </a>
               <button class="header__toggle" aria-label={open.value ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={open.value} onClick={() => (open.value = !open.value)}>
                 <Icon name={open.value ? 'x' : 'menu'} size={24} />

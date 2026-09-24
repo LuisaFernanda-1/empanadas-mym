@@ -147,7 +147,16 @@ p { margin: 0 0 1em; }
 .nav__wa-mobile { display: none; }
 .header__actions { display: flex; align-items: center; gap: 8px; }
 .header__toggle { display: none; width: 44px; height: 44px; border-radius: 10px; place-items: center; }
-@media (max-width: 1080px) and (min-width: 901px) { .nav__link { padding-inline: 9px; } }
+.nav__link { white-space: nowrap; }
+/* Pantallas medianas: el menú cabe en una línea aunque un nombre sea largo ("Productos y servicios");
+   los botones Administrar y WhatsApp quedan solo con su ícono */
+@media (max-width: 1180px) and (min-width: 901px) {
+  .nav__list { gap: 2px; }
+  .nav__link { padding-inline: 8px; font-size: .88rem; }
+  .header__admin, .header__wa { padding: .55em .7em; }
+  .header__admin-label, .header__wa-label { display: none; }
+  .brand__name { font-size: 1.15rem; }
+}
 @media (max-width: 520px) { .header__admin { padding: .55em .7em; } .header__admin-label { display: none; } }
 
 @media (max-width: 900px) {

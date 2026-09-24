@@ -179,7 +179,13 @@ $adm = $f['administrador'];
 $pass = (string) ($adm['contrasena_inicial'] ?? '');
 if (strlen($pass) < 8) {
     $pass = rtrim(strtr(base64_encode(random_bytes(9)), '+/', 'Ab'), '=');
-    $warnings[] = "Contraseña inicial generada automáticamente: $pass";
+    // Solo se avisa si esta clave de verdad se va a usar: administrador nuevo o --reset-clave
+    $adminExists = !isset($opts['sql']) && Database::one(
+        'SELECT a.id FROM admins a JOIN sites s ON s.id = a.site_id WHERE s.slug = ?', [$slug]
+    ) !== null;
+    if (!$adminExists || isset($opts['reset-clave'])) {
+        $warnings[] = "Contraseña inicial generada automáticamente: $pass";
+    }
 }
 $hash = password_hash($pass, PASSWORD_DEFAULT);
 $onDup = 'email = VALUES(email), username = VALUES(username)' . (isset($opts['reset-clave']) ? ', password_hash = VALUES(password_hash)' : '');
