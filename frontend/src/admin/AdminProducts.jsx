@@ -120,7 +120,7 @@ export default defineComponent({
             )}
           </div>
 
-          {editing.value && <ProductForm product={editing.value} onClose={() => (editing.value = null)} onSaved={onSaved} />}
+          {editing.value && <ProductForm product={editing.value} example={items.value[0]} onClose={() => (editing.value = null)} onSaved={onSaved} />}
           {toDelete.value && (
             <ConfirmDialog
               title="¿Eliminar producto?"

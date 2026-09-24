@@ -9,7 +9,8 @@ const MAX_DESC = 300
 
 export default defineComponent({
   name: 'ProductForm',
-  props: { product: { type: Object, required: true } },
+  // example: un producto del propio catálogo, para que los ejemplos del formulario sean de este negocio
+  props: { product: { type: Object, required: true }, example: { type: Object, default: null } },
   emits: ['close', 'saved'],
   setup(props, { emit }) {
     const isNew = !props.product.id
@@ -26,6 +27,8 @@ export default defineComponent({
     const busy = ref(false)
     const dragging = ref(false)
     const descLeft = computed(() => MAX_DESC - form.description.length)
+    const exName = props.example?.name ? `Ej: ${props.example.name}` : 'Ej: Nombre de tu producto'
+    const exPrice = props.example?.price ? String(Math.round(Number(props.example.price))) : '10000'
     // El mensaje de error de cada campo desaparece en cuanto se corrige
     watch(() => form.name, () => (errors.name = ''))
     watch(() => form.price, () => (errors.price = ''))
@@ -43,7 +46,7 @@ export default defineComponent({
     function validate() {
       Object.keys(errors).forEach((k) => (errors[k] = ''))
       if (!form.name.trim()) errors.name = 'Escribe el nombre del producto.'
-      if (form.price && !/^\d+([.,]\d{1,2})?$/.test(form.price.replace(/[$\s.]/g, ''))) errors.price = 'Escribe solo números, sin puntos ni símbolos. Ej: 18000'
+      if (form.price && !/^\d+([.,]\d{1,2})?$/.test(form.price.replace(/[$\s.]/g, ''))) errors.price = `Escribe solo números, sin puntos ni símbolos. Ej: ${exPrice}`
       if (form.description.length > MAX_DESC) errors.description = `Máximo ${MAX_DESC} caracteres.`
       if (isNew && !file.value) errors.image = 'Agrega una imagen del producto.'
       return !Object.values(errors).some(Boolean)
@@ -105,14 +108,14 @@ export default defineComponent({
               {general.value && <p class="alert alert--error">{general.value}</p>}
               <label class={['field', { 'has-error': errors.name }]}>
                 <span>Nombre *</span>
-                <input v-model={form.name} maxlength={120} placeholder="Ej: Café en grano 500 g" />
+                <input v-model={form.name} maxlength={120} placeholder={exName} />
                 {errors.name && <small class="field__error">{errors.name}</small>}
               </label>
               <label class={['field', { 'has-error': errors.price }]}>
                 <span>Precio (COP)</span>
                 <div class="field__control field__control--prefix">
                   <b>$</b>
-                  <input v-model={form.price} inputmode="numeric" placeholder="18000" />
+                  <input v-model={form.price} inputmode="numeric" placeholder={exPrice} />
                 </div>
                 <small class="hint">Déjalo vacío si prefieres mostrar "Consultar precio".</small>
                 {errors.price && <small class="field__error">{errors.price}</small>}
